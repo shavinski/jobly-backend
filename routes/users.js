@@ -121,5 +121,18 @@ router.post("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req
   return res.json({ applied: jobId });
 });
 
+/** Delete /[username]/jobs/[id]  { state } => { application }
+ *
+ * Returns {"unapplied": jobId}
+ *
+ * Authorization required: admin or same-user-as-:username
+ * */
+
+router.delete("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  const jobId = +req.params.id;
+  await User.unapplyToJob(req.params.username, jobId);
+  return res.json({ unapplied: jobId });
+});
+
 
 module.exports = router;

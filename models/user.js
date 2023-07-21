@@ -250,7 +250,36 @@ class User {
         INSERT INTO applications (job_id, username)
         VALUES ($1, $2)`, [jobId, username]);
   }
-}
 
+  /**
+   * Unapply for job: update db, returns undefined
+   * 
+   * - username: username for unapplying for job
+   * - jobId: job id
+   */
+
+  static async unapplyToJob(username, jobId) {
+    const preCheck = await db.query(`
+        SELECT job_id
+        FROM applications
+        WHERE job_id = $1`, [jobId]);
+    const job = preCheck.rows[0];
+
+    if (!job) throw new NotFoundError(`No job id of: ${jobId} in users applications`);
+
+    const preCheck2 = await db.query(`
+        SELECT username
+        FROM applications
+        WHERE username = $1`, [username]);
+    const user = preCheck2.rows[0];
+
+    if (!user) throw new NotFoundError(`No username: ${username}`);
+
+    await db.query(`
+        DELETE FROM applications 
+        WHERE job_id = $1 AND username = $2`,
+      [jobId, username]);
+  }
+}
 
 module.exports = User;
