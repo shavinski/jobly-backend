@@ -170,6 +170,7 @@ describe("update", function () {
     expect(job).toEqual({
       username: "u1",
       ...updateData,
+      applications: [testJobIds[0]]
     });
   });
 
@@ -183,6 +184,7 @@ describe("update", function () {
       lastName: "U1L",
       email: "u1@email.com",
       isAdmin: false,
+      applications: [testJobIds[0]]
     });
     const found = await db.query("SELECT * FROM users WHERE username = 'u1'");
     expect(found.rows.length).toEqual(1);
@@ -217,7 +219,7 @@ describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
     const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+      "SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 
@@ -238,7 +240,7 @@ describe("applyToJob", function () {
     await User.applyToJob("u1", testJobIds[1]);
 
     const res = await db.query(
-        "SELECT * FROM applications WHERE job_id=$1", [testJobIds[1]]);
+      "SELECT * FROM applications WHERE job_id=$1", [testJobIds[1]]);
     expect(res.rows).toEqual([{
       job_id: testJobIds[1],
       username: "u1",

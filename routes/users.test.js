@@ -262,7 +262,7 @@ describe("GET /users/:username", function () {
 
   test("unauth if user not found - non-admin", async function () {
     const resp = await request(app)
-        .get(`/users/nope`)
+      .get(`/users/nope`)
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
@@ -290,6 +290,7 @@ describe("PATCH /users/:username", () => {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        applications: [testJobIds[0]]
       },
     });
   });
@@ -308,6 +309,7 @@ describe("PATCH /users/:username", () => {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        applications: [testJobIds[0]]
       },
     });
   });
