@@ -25,7 +25,7 @@
 
 1. Clone the repo
    ```sh
-   git@github.com:shavinski/jobly-backend.git
+   git clone git@github.com:shavinski/jobly-backend.git
    ```
 2. Install dependencies
    ```sh
