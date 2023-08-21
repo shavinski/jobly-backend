@@ -118,7 +118,8 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies ${where}
-        ORDER BY name`, vals);
+        ORDER BY name
+        LIMIT 20`, vals);
     return companiesRes.rows;
   }
 
