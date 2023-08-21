@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -64,7 +64,7 @@ class Company {
    * }
    */
 
-  static _filterWhereBuilder({ minEmployees, maxEmployees, nameLike }) {
+  static _filterWhereBuilder({ minEmployees, maxEmployees, nameLike, lastCompName }) {
     let whereParts = [];
     let vals = [];
 
@@ -83,9 +83,14 @@ class Company {
       whereParts.push(`name ILIKE $${vals.length}`);
     }
 
+    if (lastCompName) {
+      vals.push(lastCompName);
+      whereParts.push(`name > $${vals.length}`);
+    }
+
     const where = (whereParts.length > 0) ?
-        "WHERE " + whereParts.join(" AND ")
-        : "";
+      "WHERE " + whereParts.join(" AND ")
+      : "";
 
     return { where, vals };
   }
@@ -108,7 +113,7 @@ class Company {
     }
 
     const { where, vals } = this._filterWhereBuilder({
-      minEmployees, maxEmployees, nameLike,
+      minEmployees, maxEmployees, nameLike
     });
 
     const companiesRes = await db.query(`
@@ -171,11 +176,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `
