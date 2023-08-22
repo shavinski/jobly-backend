@@ -64,7 +64,7 @@ class Company {
    * }
    */
 
-  static _filterWhereBuilder({ minEmployees, maxEmployees, nameLike, lastCompName }) {
+  static _filterWhereBuilder({ minEmployees, maxEmployees, nameLike, lastCompHandle }) {
     let whereParts = [];
     let vals = [];
 
@@ -83,9 +83,9 @@ class Company {
       whereParts.push(`name ILIKE $${vals.length}`);
     }
 
-    if (lastCompName) {
-      vals.push(lastCompName);
-      whereParts.push(`name > $${vals.length}`);
+    if (lastCompHandle) {
+      vals.push(lastCompHandle);
+      whereParts.push(`handle > $${vals.length}`);
     }
 
     const where = (whereParts.length > 0) ?
@@ -105,7 +105,7 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll(searchFilters = {}) {
+  static async findAll(searchFilters = {}, lastCompHandle) {
     const { minEmployees, maxEmployees, nameLike } = searchFilters;
 
     if (minEmployees > maxEmployees) {
@@ -113,7 +113,7 @@ class Company {
     }
 
     const { where, vals } = this._filterWhereBuilder({
-      minEmployees, maxEmployees, nameLike
+      minEmployees, maxEmployees, nameLike, lastCompHandle
     });
 
     const companiesRes = await db.query(`
