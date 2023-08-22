@@ -117,8 +117,6 @@ class Company {
       vals.push(offset);
     }
 
-    console.log(offset, 'where:', where, 'vals:', vals);
-
     const companiesRes = await db.query(`
         SELECT handle,
                name,
