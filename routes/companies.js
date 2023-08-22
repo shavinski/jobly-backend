@@ -53,10 +53,11 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
   const q = req.query;
-  const lastCompHandle = req.body.lastCompHandle;
+  console.log('query', q);
   // arrive as strings from querystring, but we want as ints
   if (q.minEmployees !== undefined) q.minEmployees = +q.minEmployees;
   if (q.maxEmployees !== undefined) q.maxEmployees = +q.maxEmployees;
+  if (q.offset !== undefined) q.offset = +q.offset
 
   const validator = jsonschema.validate(
     q,
@@ -68,7 +69,7 @@ router.get("/", async function (req, res, next) {
     throw new BadRequestError(errs);
   }
 
-  const companies = await Company.findAll(q, lastCompHandle);
+  const companies = await Company.findAll(q);
   return res.json({ companies });
 });
 

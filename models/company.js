@@ -64,7 +64,7 @@ class Company {
    * }
    */
 
-  static _filterWhereBuilder({ minEmployees, maxEmployees, nameLike, lastCompHandle }) {
+  static _filterWhereBuilder({ minEmployees, maxEmployees, nameLike }) {
     let whereParts = [];
     let vals = [];
 
@@ -83,15 +83,11 @@ class Company {
       whereParts.push(`name ILIKE $${vals.length}`);
     }
 
-    if (lastCompHandle) {
-      vals.push(lastCompHandle);
-      whereParts.push(`handle > $${vals.length}`);
-    }
-
     const where = (whereParts.length > 0) ?
       "WHERE " + whereParts.join(" AND ")
       : "";
 
+    console.log('where', where);
     return { where, vals };
   }
 
@@ -105,16 +101,23 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll(searchFilters = {}, lastCompHandle) {
-    const { minEmployees, maxEmployees, nameLike } = searchFilters;
+  static async findAll(searchFilters = {}) {
+    const { minEmployees, maxEmployees, nameLike, offset } = searchFilters;
+
 
     if (minEmployees > maxEmployees) {
       throw new BadRequestError("Min employees cannot be greater than max");
     }
 
     const { where, vals } = this._filterWhereBuilder({
-      minEmployees, maxEmployees, nameLike, lastCompHandle
+      minEmployees, maxEmployees, nameLike, offset
     });
+
+    if (offset !== undefined) {
+      vals.push(offset);
+    }
+
+    console.log(offset, 'where:', where, 'vals:', vals);
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -124,7 +127,8 @@ class Company {
                logo_url      AS "logoUrl"
         FROM companies ${where}
         ORDER BY name
-        LIMIT 20`, vals);
+        LIMIT 20
+        OFFSET $${vals.length}`, vals);
     return companiesRes.rows;
   }
 
