@@ -102,7 +102,7 @@ class Company {
    * */
 
   static async findAll(searchFilters = {}) {
-    const { minEmployees, maxEmployees, nameLike, offset } = searchFilters;
+    const { minEmployees, maxEmployees, nameLike, offset = 0 } = searchFilters;
 
 
     if (minEmployees > maxEmployees) {
