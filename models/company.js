@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -84,9 +84,10 @@ class Company {
     }
 
     const where = (whereParts.length > 0) ?
-        "WHERE " + whereParts.join(" AND ")
-        : "";
+      "WHERE " + whereParts.join(" AND ")
+      : "";
 
+    console.log('where', where);
     return { where, vals };
   }
 
@@ -101,15 +102,20 @@ class Company {
    * */
 
   static async findAll(searchFilters = {}) {
-    const { minEmployees, maxEmployees, nameLike } = searchFilters;
+    const { minEmployees, maxEmployees, nameLike, offset = 0 } = searchFilters;
+
 
     if (minEmployees > maxEmployees) {
       throw new BadRequestError("Min employees cannot be greater than max");
     }
 
     const { where, vals } = this._filterWhereBuilder({
-      minEmployees, maxEmployees, nameLike,
+      minEmployees, maxEmployees, nameLike, offset
     });
+
+    if (offset !== undefined) {
+      vals.push(offset);
+    }
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -118,7 +124,9 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies ${where}
-        ORDER BY name`, vals);
+        ORDER BY name
+        LIMIT 20
+        OFFSET $${vals.length}`, vals);
     return companiesRes.rows;
   }
 
@@ -170,11 +178,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `

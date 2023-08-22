@@ -14,6 +14,10 @@
     "nameLike": {
       "type": "string",
       "minLength": 1
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 0
     }
   },
   "additionalProperties": false,

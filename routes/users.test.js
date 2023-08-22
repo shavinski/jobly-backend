@@ -386,6 +386,7 @@ describe("PATCH /users/:username", () => {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        applications: [testJobIds[0]]
       },
     });
     const isSuccessful = await User.authenticate("u1", "new-password");
