@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1692744124176" clover="3.2.0">
-  <project timestamp="1692744124176" name="All files">
+<coverage generated="1693241590431" clover="3.2.0">
+  <project timestamp="1693241590431" name="All files">
     <metrics statements="422" coveredstatements="411" conditionals="126" coveredconditionals="116" methods="75" coveredmethods="72" elements="623" coveredelements="599" complexity="0" loc="422" ncloc="422" packages="5" files="16" classes="16"/>
     <package name="jobly-backend">
       <metrics statements="52" coveredstatements="51" conditionals="18" coveredconditionals="14" methods="8" coveredmethods="7"/>
